@@ -1,14 +1,13 @@
 import asyncio
-import json
 import time
 
 import aiohttp
-import requests
 import uvloop
 
-from utils.RedisUtil import RedisUtil
 from configs.liveType import liveType
-from configs.memberInfo import members as memberList
+from utils.RedisUtil import RedisUtil
+
+# from configs.memberInfo import members as memberList
 
 asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -31,11 +30,12 @@ class LiveUtil:
                 # print(live)
                 try:
                     memberId = live['memberId']
-                    if memberList.__contains__(memberId):
+                    # if memberList.__contains__(memberId):
+                    if (memberId in memberList)or self.redisUtil.isContains(memberId):
                         liveInfo = self.pharseLiveInfo(live)
                         # print(liveInfo)
                         returnList.append(liveInfo)
-                except:
+                except Exception:
                     print('成员Id解析出错')
                     pass
         return returnList
@@ -67,14 +67,14 @@ class LiveUtil:
                     respJSON = await resp.json()
                     liveList = respJSON['content']['liveList']
                     # print(liveList)
-                except:
+                except Exception:
                     print('live list JSON parse error')
         return liveList
 
     def getLiveId(self, live):
         try:
             liveId = live['liveId']
-        except:
+        except Exception:
             print("live info pharse error")
             pass
         return liveId
@@ -100,7 +100,7 @@ class LiveUtil:
                     json = await resp.json()
                     # print(json)
                     return json
-                except:
+                except Exception:
                     print("get live one json parse error")
                     return
 
@@ -119,14 +119,18 @@ class LiveUtil:
                 'startTime': live['startTime']
             }
             return liveInfo
-        except:
+        except Exception:
             print('成员直播信息解析出错\nLive: %s' % (live))
             pass
 
     def buildLiveMessageString(self, liveInfo):
 
         msg = "\n%s的%s: %s\n流地址:\n%s\n开始时间: %s\n" % (
-            liveInfo['name'], liveType[liveInfo['type']], liveInfo['title'], liveInfo['streamPath'], time.strftime("%m/%d %H:%M", time.localtime(liveInfo['startTime']/1000)))
+            liveInfo['name'],
+            liveType[liveInfo['type']],
+            liveInfo['title'], liveInfo['streamPath'],
+            time.strftime("%m/%d %H:%M",
+                          time.localtime(liveInfo['startTime']/1000)))
         return msg
 
     async def send(self, groupId, message):
@@ -142,6 +146,6 @@ class LiveUtil:
                 try:
                     respText = await resp.json()
                     return respText
-                except:
+                except Exception:
                     print('解析响应JSON异常')
                     return resp

@@ -32,11 +32,14 @@ class RedisUtil:
             if not self.r.exists(self.keyName):
                 self.initNicknames()
             nickname = self.r.hget(self.keyName, memberId).decode()
-        except:
+        except Exception:
             nickname = ''
         if not nickname or nickname == ''or nickname == 0:
             return members[memberId]
         return nickname
+
+    def isContains(self, memberId):
+        return self.r.hexists(self.keyName, memberId)
 
     def initNicknames(self):
         pipeline = self.r.pipeline()
@@ -47,4 +50,5 @@ class RedisUtil:
 
 
 if __name__ == "__main__":
-    print(RedisUtil().getMemberNickname(63548))
+    redisutil = RedisUtil()
+    print(redisutil.getMemberNickname(63548))

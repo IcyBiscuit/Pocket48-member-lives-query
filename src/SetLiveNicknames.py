@@ -3,7 +3,6 @@ import redis
 from configs.memberInfo import members
 from configs.redisConfig import configs
 
-
 redisConfig = configs['remotehost']
 
 
@@ -25,5 +24,5 @@ try:
     resp = pipeline.execute()
     print(resp)
     # print(r.hgetall(key))
-except:
+except Exception:
     print('exception caught')
