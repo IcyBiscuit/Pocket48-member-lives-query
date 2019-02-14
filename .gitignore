@@ -1,0 +1,8 @@
+.vscode/
+__pycache__/
+test/
+
+redisConfig.py
+groupsConfig.py
+
+clearNohup.sh
