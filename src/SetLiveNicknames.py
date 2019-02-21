@@ -7,11 +7,13 @@ redisConfig = configs['remotehost']
 
 
 # pool = redis.ConnectionPool(
-#     host=redisConfig['host'], port=redisConfig['port'], password=redisConfig['password'])
+# host=redisConfig['host'], port=redisConfig['port'], password=redisConfig['password'])
 
 # r = redis.Redis('127.0.0.1', port=6379, password=None)
 r = redis.StrictRedis(
-    host=redisConfig['host'], port=redisConfig['port'], password=redisConfig['password'])
+    host=redisConfig['host'],
+    port=redisConfig['port'],
+    password=redisConfig['password'])
 
 key = 'LiveNicknames'
 pipeline = r.pipeline()
